@@ -1,12 +1,12 @@
-package com.wise.signals.flutter
+package io.signap.sdk.flutter
 
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import com.wise.fingerprint.IdentifyOptions
-import com.wise.fingerprint.WiseConfiguration
-import com.wise.fingerprint.WiseException
-import com.wise.fingerprint.WiseFingerprint
+import io.signap.sdk.IdentifyOptions
+import io.signap.sdk.SignapConfiguration
+import io.signap.sdk.SignapException
+import io.signap.sdk.Signap
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -15,15 +15,15 @@ import io.flutter.plugin.common.MethodChannel.Result
 import java.util.concurrent.Executors
 
 /**
- * Flutter plugin for the Wise Signals Android SDK.
+ * Flutter plugin for the Signap Android SDK.
  *
  * Marshals the Dart `identify(config, options)` call to the native
- * `com.wise.fingerprint.WiseFingerprint` SDK (sdks/android) — signal collection,
+ * `io.signap.sdk.Signap` SDK (sdks/android) — signal collection,
  * derived ids, cert pinning and the `/v1/identify` transport all run there. This
  * plugin only translates the channel `Map` ↔ the native types and runs the
  * blocking `identify()` off the platform thread.
  */
-class WiseSignalsPlugin : FlutterPlugin, MethodCallHandler {
+class SignapPlugin : FlutterPlugin, MethodCallHandler {
     private lateinit var channel: MethodChannel
     private var context: Context? = null
 
@@ -61,7 +61,7 @@ class WiseSignalsPlugin : FlutterPlugin, MethodCallHandler {
             return
         }
 
-        val configuration = WiseConfiguration(
+        val configuration = SignapConfiguration(
             apiKey = apiKey,
             endpoint = configMap["endpoint"] as? String,
             region = configMap["region"] as? String ?: "ap",
@@ -83,7 +83,7 @@ class WiseSignalsPlugin : FlutterPlugin, MethodCallHandler {
 
         executor.execute {
             try {
-                val wise = WiseFingerprint(ctx, configuration)
+                val wise = Signap(ctx, configuration)
                 val r = wise.identify(identifyOptions)
                 val payload = mapOf(
                     "requestId" to r.requestId,
@@ -95,7 +95,7 @@ class WiseSignalsPlugin : FlutterPlugin, MethodCallHandler {
                 )
                 // Channel replies must be delivered on the main thread.
                 mainHandler.post { result.success(payload) }
-            } catch (e: WiseException) {
+            } catch (e: SignapException) {
                 mainHandler.post { result.error(codeFor(e), e.message, null) }
             } catch (e: Exception) {
                 mainHandler.post { result.error("NETWORK_ERROR", e.message, null) }
@@ -104,17 +104,17 @@ class WiseSignalsPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     private companion object {
-        const val CHANNEL = "wise_signals"
+        const val CHANNEL = "signap_signals"
 
         /** Map the native error taxonomy to the bridge's stable string codes
-         *  (mirrors `WiseErrorCode` on the Dart side). Messages carry NO PII. */
-        fun codeFor(e: WiseException): String = when (e) {
-            is WiseException.InvalidConfiguration -> "INVALID_CONFIGURATION"
-            WiseException.Network -> "NETWORK_ERROR"
-            WiseException.Timeout -> "TIMEOUT"
-            is WiseException.Http -> "HTTP_ERROR"
-            WiseException.InvalidResponse -> "INVALID_RESPONSE"
-            WiseException.PinningFailed -> "PINNING_FAILED"
+         *  (mirrors `SignapErrorCode` on the Dart side). Messages carry NO PII. */
+        fun codeFor(e: SignapException): String = when (e) {
+            is SignapException.InvalidConfiguration -> "INVALID_CONFIGURATION"
+            SignapException.Network -> "NETWORK_ERROR"
+            SignapException.Timeout -> "TIMEOUT"
+            is SignapException.Http -> "HTTP_ERROR"
+            SignapException.InvalidResponse -> "INVALID_RESPONSE"
+            SignapException.PinningFailed -> "PINNING_FAILED"
         }
     }
 }

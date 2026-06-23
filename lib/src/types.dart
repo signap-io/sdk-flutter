@@ -1,9 +1,9 @@
-/// Public types for the Wise Signals Flutter SDK. These mirror the native iOS
-/// `WiseConfiguration`/`IdentifyOptions`/`IdentifyResult` (sdks/ios) and the
+/// Public types for the Signap Flutter SDK. These mirror the native iOS
+/// `SignapConfiguration`/`IdentifyOptions`/`IdentifyResult` (sdks/ios) and the
 /// Android equivalents (sdks/android) — the Flutter SDK is a thin bridge that
 /// delegates to those native SDKs, so the shapes stay in lockstep.
 
-/// Resolved visitor identity returned by `WiseSignals.identify`. Wire shape =
+/// Resolved visitor identity returned by `Signap.identify`. Wire shape =
 /// ingest-edge's `IngestResponse` (sync-inline): the edge resolves the visitor
 /// before responding.
 class IdentifyResult {
@@ -41,10 +41,10 @@ class IdentifyResult {
       'IdentifyResult(visitorId: $visitorId, confidence: $confidence, region: $region)';
 }
 
-/// Stable error taxonomy. Mirrors the native iOS `WiseError` / Android
-/// `WiseException` cases (mapped from the platform-channel error code) and the
+/// Stable error taxonomy. Mirrors the native iOS `SignapError` / Android
+/// `SignapException` cases (mapped from the platform-channel error code) and the
 /// web `SdkError` codes.
-enum WiseErrorCode {
+enum SignapErrorCode {
   invalidConfiguration,
   network,
   timeout,
@@ -53,41 +53,41 @@ enum WiseErrorCode {
   pinningFailed,
 }
 
-/// Maps the bridge's stable string codes ↔ [WiseErrorCode]. The strings match
-/// the codes the native plugins reject with (see WiseSignalsPlugin.{swift,kt}).
-const Map<String, WiseErrorCode> _codeFromString = {
-  'INVALID_CONFIGURATION': WiseErrorCode.invalidConfiguration,
-  'NETWORK_ERROR': WiseErrorCode.network,
-  'TIMEOUT': WiseErrorCode.timeout,
-  'HTTP_ERROR': WiseErrorCode.http,
-  'INVALID_RESPONSE': WiseErrorCode.invalidResponse,
-  'PINNING_FAILED': WiseErrorCode.pinningFailed,
+/// Maps the bridge's stable string codes ↔ [SignapErrorCode]. The strings match
+/// the codes the native plugins reject with (see SignapPlugin.{swift,kt}).
+const Map<String, SignapErrorCode> _codeFromString = {
+  'INVALID_CONFIGURATION': SignapErrorCode.invalidConfiguration,
+  'NETWORK_ERROR': SignapErrorCode.network,
+  'TIMEOUT': SignapErrorCode.timeout,
+  'HTTP_ERROR': SignapErrorCode.http,
+  'INVALID_RESPONSE': SignapErrorCode.invalidResponse,
+  'PINNING_FAILED': SignapErrorCode.pinningFailed,
 };
 
-/// Error thrown by `WiseSignals.load` / `WiseSignals.identify`. Messages carry
+/// Error thrown by `Signap.load` / `Signap.identify`. Messages carry
 /// NO PII (mirrors the native taxonomy).
-class WiseException implements Exception {
-  const WiseException(this.code, this.message, {this.status});
+class SignapException implements Exception {
+  const SignapException(this.code, this.message, {this.status});
 
-  final WiseErrorCode code;
+  final SignapErrorCode code;
   final String message;
 
-  /// HTTP status when [code] is [WiseErrorCode.http], else null.
+  /// HTTP status when [code] is [SignapErrorCode.http], else null.
   final int? status;
 
   /// Build from a platform-channel error `code` string (unknown ⇒ network).
-  factory WiseException.fromCode(String code, String message) {
-    final mapped = _codeFromString[code] ?? WiseErrorCode.network;
+  factory SignapException.fromCode(String code, String message) {
+    final mapped = _codeFromString[code] ?? SignapErrorCode.network;
     int? status;
-    if (mapped == WiseErrorCode.http) {
+    if (mapped == SignapErrorCode.http) {
       // The native HTTP reject embeds the status in the message ("server
       // returned 429"); surface it when parseable.
       final match = RegExp(r'\b(\d{3})\b').firstMatch(message);
       if (match != null) status = int.tryParse(match.group(1)!);
     }
-    return WiseException(mapped, message, status: status);
+    return SignapException(mapped, message, status: status);
   }
 
   @override
-  String toString() => 'WiseException(${code.name}: $message)';
+  String toString() => 'SignapException(${code.name}: $message)';
 }

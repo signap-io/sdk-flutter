@@ -1,4 +1,4 @@
-# wise_signals — Flutter SDK (alpha)
+# signap_signals — Flutter SDK (alpha)
 
 > Cross-platform Flutter SDK that identifies a visitor via ingest-edge
 > `/v1/identify`, returning the resolved visitor in one round-trip.
@@ -37,21 +37,21 @@ Why bridge instead of re-implementing in Dart:
 ```yaml
 # pubspec.yaml — coming soon (M8b):
 dependencies:
-  wise_signals: ^0.1.0
+  signap_signals: ^0.1.0
 
 # in-repo for now:
 dependencies:
-  wise_signals:
+  signap_signals:
     path: ../wise-fingerprint-project/sdks/flutter
 ```
 
 ## Usage
 
 ```dart
-import 'package:wise_signals/wise_signals.dart';
+import 'package:signap_signals/signap_signals.dart';
 
 // Configure once (e.g. in main() or initState). Ship a PUBLIC key only (pk_…).
-final wise = await WiseSignals.load(
+final wise = await Signap.load(
   apiKey: 'pk_live_xxxxxxxx',
   // endpoint: 'http://10.0.2.2:8080', // Android emulator → host `make dev`
   region: 'ap',                         // baked default otherwise
@@ -70,7 +70,7 @@ Failures throw a typed `WiseException` with a stable `code` (a `WiseErrorCode`:
 ### Cert pinning (production)
 
 ```dart
-final wise = await WiseSignals.load(
+final wise = await Signap.load(
   apiKey: 'pk_live_xxxxxxxx',
   pinnedSpkiHashes: ['base64-sha256-of-server-SPKI'], // empty ⇒ system trust (dev)
 );
@@ -90,7 +90,7 @@ openssl x509 -in server.crt -pubkey -noout \
 
 | Member | Signature | Notes |
 |---|---|---|
-| `WiseSignals.load(...)` | `Future<WiseSignals>` | Named args: `apiKey`, `endpoint?`, `region`, `timeoutMs`, `pinnedSpkiHashes`. Validates `apiKey` (≥ 8 chars). |
+| `Signap.load(...)` | `Future<Signap>` | Named args: `apiKey`, `endpoint?`, `region`, `timeoutMs`, `pinnedSpkiHashes`. Validates `apiKey` (≥ 8 chars). |
 | `wise.identify(...)` | `Future<IdentifyResult>` | Named args: `linkedId?`, `tag?`, `extra?`. Collects signals natively + resolves the visitor. |
 
 `IdentifyResult`: `{ requestId, ingestedAt, region, visitorId, confidence, identifiedAt }`
@@ -105,7 +105,7 @@ The bridge calls into the native SDKs, which are **not yet published**:
 - **iOS** — the [iOS SDK](../ios) is currently Swift Package Manager–only. Add the
   `WiseFingerprint` package to your app (Xcode → *Package Dependencies*); it links
   into the same binary so `import WiseFingerprint` in the plugin resolves. Once a
-  CocoaPods coordinate ships (M6), it moves into [`ios/wise_signals.podspec`](./ios/wise_signals.podspec).
+  CocoaPods coordinate ships (M6), it moves into [`ios/signap_signals.podspec`](./ios/signap_signals.podspec).
 - **Android** — the [Android SDK](../android) is not yet on Maven Central. For
   in-repo dev, wire it via a Gradle composite build; once published (M6), depend on
   the real coordinate in [`android/build.gradle`](./android/build.gradle).

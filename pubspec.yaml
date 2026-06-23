@@ -1,6 +1,6 @@
-name: wise_signals
+name: signap_signals
 description: >-
-  Wise Signals — Flutter SDK for visitor identification and cross-platform
+  Signap — Flutter SDK for visitor identification and cross-platform
   stitching. A thin bridge over the native iOS/Android SDKs.
 version: 0.1.0
 publish_to: none # brand-gated — not published to pub.dev yet (handoff M6/M7)
@@ -22,7 +22,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.wise.signals.flutter
-        pluginClass: WiseSignalsPlugin
+        package: io.signap.sdk.flutter
+        pluginClass: SignapPlugin
       ios:
-        pluginClass: WiseSignalsPlugin
+        pluginClass: SignapPlugin

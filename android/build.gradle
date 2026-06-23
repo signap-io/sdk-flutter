@@ -1,6 +1,6 @@
-// Android side of the Wise Signals Flutter plugin. Follows the standard Flutter
+// Android side of the Signap Flutter plugin. Follows the standard Flutter
 // federated-plugin Gradle layout (the host Flutter app supplies AGP/Kotlin).
-group = "com.wise.signals.flutter"
+group = "io.signap.sdk.flutter"
 version = "0.1.0"
 
 buildscript {
@@ -26,7 +26,7 @@ apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
 
 android {
-    namespace "com.wise.signals.flutter"
+    namespace "io.signap.sdk.flutter"
     compileSdk 34
 
     defaultConfig {
@@ -53,5 +53,5 @@ dependencies {
     // Gradle composite build for in-repo dev; once published (M6) depend on the
     // real coordinate here (the brand name bakes into it). The plugin compiles
     // once this resolves:
-    //   implementation "<brand>:wise-fingerprint:0.1.0"
+    //   implementation "io.signap.sdk:signals:0.1.0"
 }

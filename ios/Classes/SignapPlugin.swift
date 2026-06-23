@@ -1,18 +1,18 @@
 import Flutter
 import Foundation
-import WiseFingerprint
+import Signap
 
-/// Flutter plugin for the Wise Signals iOS SDK.
+/// Flutter plugin for the Signap iOS SDK.
 ///
 /// Marshals the Dart `identify(config, options)` call to the native
-/// `WiseFingerprint` SDK (sdks/ios) — signal collection, derived ids, cert
+/// `Signap` SDK (sdks/ios) — signal collection, derived ids, cert
 /// pinning and the `/v1/identify` transport all run there. This plugin only
 /// translates the channel dictionary ↔ the native types and bridges async ↔ the
 /// Flutter result callback.
-public class WiseSignalsPlugin: NSObject, FlutterPlugin {
+public class SignapPlugin: NSObject, FlutterPlugin {
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let channel = FlutterMethodChannel(name: "wise_signals", binaryMessenger: registrar.messenger())
-        registrar.addMethodCallDelegate(WiseSignalsPlugin(), channel: channel)
+        let channel = FlutterMethodChannel(name: "signap_signals", binaryMessenger: registrar.messenger())
+        registrar.addMethodCallDelegate(SignapPlugin(), channel: channel)
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -30,7 +30,7 @@ public class WiseSignalsPlugin: NSObject, FlutterPlugin {
         }
         let options = args["options"] as? [String: Any] ?? [:]
 
-        var configuration = WiseConfiguration(apiKey: apiKey)
+        var configuration = SignapConfiguration(apiKey: apiKey)
         if let endpoint = config["endpoint"] as? String, let url = URL(string: endpoint) {
             configuration.endpoint = url
         }
@@ -52,7 +52,7 @@ public class WiseSignalsPlugin: NSObject, FlutterPlugin {
 
         Task {
             do {
-                let wise = try WiseFingerprint(configuration: configuration)
+                let wise = try Signap(configuration: configuration)
                 let r = try await wise.identify(identifyOptions)
                 let payload: [String: Any] = [
                     "requestId": r.requestId,
@@ -64,7 +64,7 @@ public class WiseSignalsPlugin: NSObject, FlutterPlugin {
                 ]
                 // FlutterResult must be invoked on the main thread.
                 await MainActor.run { result(payload) }
-            } catch let error as WiseError {
+            } catch let error as SignapError {
                 let (code, message) = Self.describe(error)
                 await MainActor.run { result(FlutterError(code: code, message: message, details: nil)) }
             } catch {
@@ -76,8 +76,8 @@ public class WiseSignalsPlugin: NSObject, FlutterPlugin {
     }
 
     /// Map the native error taxonomy to the bridge's stable string codes
-    /// (mirrors `WiseErrorCode` on the Dart side). Messages carry NO PII.
-    private static func describe(_ error: WiseError) -> (String, String) {
+    /// (mirrors `SignapErrorCode` on the Dart side). Messages carry NO PII.
+    private static func describe(_ error: SignapError) -> (String, String) {
         switch error {
         case let .invalidConfiguration(reason):
             return ("INVALID_CONFIGURATION", reason)
