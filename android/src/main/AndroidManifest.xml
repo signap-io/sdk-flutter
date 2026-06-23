@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Namespace is declared in build.gradle (AGP 8+); this manifest is intentionally
+     minimal. The native Android SDK declares the INTERNET permission it needs. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" />

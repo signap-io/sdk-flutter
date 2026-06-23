@@ -1,0 +1,57 @@
+// Android side of the Wise Signals Flutter plugin. Follows the standard Flutter
+// federated-plugin Gradle layout (the host Flutter app supplies AGP/Kotlin).
+group = "com.wise.signals.flutter"
+version = "0.1.0"
+
+buildscript {
+    ext.kotlin_version = "2.0.0"
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:8.5.0"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+apply plugin: "com.android.library"
+apply plugin: "kotlin-android"
+
+android {
+    namespace "com.wise.signals.flutter"
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 24 // matches the native Android SDK (sdks/android) floor
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
+    sourceSets {
+        main.java.srcDirs += "src/main/kotlin"
+    }
+}
+
+dependencies {
+    // Native SDK (sdks/android). NOT yet on Maven Central (brand-gated — handoff
+    // M6/M7), so the real coordinate is provisional. Until it ships, wire it via a
+    // Gradle composite build for in-repo dev; once published (M6) depend on the
+    // real coordinate here (the brand name bakes into it). The plugin compiles
+    // once this resolves:
+    //   implementation "<brand>:wise-fingerprint:0.1.0"
+}
