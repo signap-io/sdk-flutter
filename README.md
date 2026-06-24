@@ -10,7 +10,7 @@
 ## Architecture — a thin native bridge (not a re-implementation)
 
 This SDK is a **bridge**: every Dart `identify()` call is marshalled over a method
-channel to the audited **native SDKs** — [iOS `WiseFingerprint`](../ios) and
+channel to the audited **native SDKs** — [iOS `Signap`](../ios) and
 [Android `com.wise.fingerprint`](../android). Device-signal collection, the
 cross-platform **derived ids** (`supplementary_id`/`proximity_id`), cert pinning
 and the `/v1/identify` transport all run in that native code.
@@ -103,8 +103,8 @@ maps ↔ native types).
 The bridge calls into the native SDKs, which are **not yet published**:
 
 - **iOS** — the [iOS SDK](../ios) is currently Swift Package Manager–only. Add the
-  `WiseFingerprint` package to your app (Xcode → *Package Dependencies*); it links
-  into the same binary so `import WiseFingerprint` in the plugin resolves. Once a
+  `Signap` package to your app (Xcode → *Package Dependencies*); it links
+  into the same binary so `import Signap` in the plugin resolves. Once a
   CocoaPods coordinate ships (M6), it moves into [`ios/signap_signals.podspec`](./ios/signap_signals.podspec).
 - **Android** — the [Android SDK](../android) is not yet on Maven Central. For
   in-repo dev, wire it via a Gradle composite build; once published (M6), depend on
@@ -115,7 +115,7 @@ The bridge calls into the native SDKs, which are **not yet published**:
 The native SDK builds a proto3-JSON `FingerprintPayload` (with the additive
 `MobileSignals` block, M1) — the **same wire shape** as the native iOS/Android
 apps, reported with the underlying native SDK's `x-sdk-name`
-(`@wise/signals-ios` / `@wise/signals-android`). See the
+(`@signap/signals-ios` / `@signap/signals-android`). See the
 [iOS](../ios/README.md) / [Android](../android/README.md) READMEs for the full
 field list.
 
