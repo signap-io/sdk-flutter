@@ -7,9 +7,9 @@ Pod::Spec.new do |s|
   s.version          = "0.1.0"
   s.summary          = "Signap — Flutter SDK (iOS bridge)."
   s.description      = "Thin Flutter bridge over the native Signap iOS SDK."
-  s.homepage         = "https://github.com/wise-technology-group/wise-fingerprint-project"
+  s.homepage         = "https://signap.io"
   s.license      = { :type => "Apache-2.0", :file => "LICENSE" }
-  s.author           = { "Wise Technology Group" => "dev@wise.example" }
+  s.author           = { "Signap Technology" => "support@signap.io" }
   s.source           = { :path => "." }
   s.source_files     = "Classes/**/*"
   s.platform         = :ios, "14.0"
