@@ -33,9 +33,11 @@ class Signap {
   /// `sk_`/management keys (a public key is protected by per-key rate-limit +
   /// quota + origin policy, not by secrecy).
   ///
-  /// [endpoint] is the explicit ingest-edge base URL (the SDK appends
-  /// `/v1/identify`); when null the native SDK's baked default for [region] is
-  /// used. [pinnedSpkiHashes] are base64 SHA-256 SPKI pins (empty ⇒ system trust).
+  /// [endpoint] is the ingest-edge base URL (the SDK appends `/v1/identify`).
+  /// **Required** — the native SDK ships no baked default host, so a null endpoint
+  /// throws an invalid-configuration error (unless [region] maps to a baked host,
+  /// which is empty in the alpha publish). [pinnedSpkiHashes] are base64 SHA-256
+  /// SPKI pins (empty ⇒ system trust).
   static Future<Signap> load({
     required String apiKey,
     String? endpoint,

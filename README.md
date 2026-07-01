@@ -35,10 +35,11 @@ dependencies:
 import 'package:signap_signals/signap_signals.dart';
 
 // Configure once (e.g. in main() or initState). Ship a PUBLIC key only (pk_…).
+// `endpoint` is REQUIRED — the SDK ships no baked default host.
 final wise = await Signap.load(
   apiKey: 'pk_live_xxxxxxxx',
-  // endpoint: 'http://10.0.2.2:8080', // Android emulator → a local dev server
-  region: 'ap',                         // baked default otherwise
+  endpoint: 'https://your-ingest-host.example', // required (e.g. http://10.0.2.2:8080 → a local dev server from the Android emulator)
+  region: 'ap',
 );
 
 // Identify. `linkedId` is the cross-platform linkage hint: pass the logged-in
