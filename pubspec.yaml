@@ -4,6 +4,7 @@ description: >-
   stitching. A thin bridge over the native iOS/Android SDKs.
 version: 0.1.0
 homepage: https://signap.io
+repository: https://github.com/signap-io/sdk-flutter
 # NOTE: publishing to pub.dev is a Dev-7 release step (mirror the native M7 flow).
 # `flutter pub publish` targets pub.dev by default now that the `publish_to: none`
 # guard is removed. See docs/phase3/design/mobile-rn-flutter-publish-handoff.md.
