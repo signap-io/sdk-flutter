@@ -52,8 +52,8 @@ public class SignapPlugin: NSObject, FlutterPlugin {
 
         Task {
             do {
-                let wise = try Signap(configuration: configuration)
-                let r = try await wise.identify(identifyOptions)
+                let signap = try Signap(configuration: configuration)
+                let r = try await signap.identify(identifyOptions)
                 let payload: [String: Any] = [
                     "requestId": r.requestId,
                     "ingestedAt": r.ingestedAt,

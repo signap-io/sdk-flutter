@@ -83,8 +83,8 @@ class SignapPlugin : FlutterPlugin, MethodCallHandler {
 
         executor.execute {
             try {
-                val wise = Signap(ctx, configuration)
-                val r = wise.identify(identifyOptions)
+                val signap = Signap(ctx, configuration)
+                val r = signap.identify(identifyOptions)
                 val payload = mapOf(
                     "requestId" to r.requestId,
                     "ingestedAt" to r.ingestedAt,

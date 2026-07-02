@@ -36,7 +36,7 @@ import 'package:signap_signals/signap_signals.dart';
 
 // Configure once (e.g. in main() or initState). Ship a PUBLIC key only (pk_…).
 // `endpoint` is REQUIRED — the SDK ships no baked default host.
-final wise = await Signap.load(
+final signap = await Signap.load(
   apiKey: 'pk_live_xxxxxxxx',
   endpoint: 'https://your-ingest-host.example', // required (e.g. http://10.0.2.2:8080 → a local dev server from the Android emulator)
   region: 'ap',
@@ -44,7 +44,7 @@ final wise = await Signap.load(
 
 // Identify. `linkedId` is the cross-platform linkage hint: pass the logged-in
 // user id so web + mobile sessions link to the same account.
-final result = await wise.identify(linkedId: currentUserId);
+final result = await signap.identify(linkedId: currentUserId);
 debugPrint('${result.visitorId} ${result.confidence}');
 ```
 
@@ -55,7 +55,7 @@ Failures throw a typed `SignapException` with a stable `code` (a `SignapErrorCod
 ### Cert pinning (production)
 
 ```dart
-final wise = await Signap.load(
+final signap = await Signap.load(
   apiKey: 'pk_live_xxxxxxxx',
   pinnedSpkiHashes: ['base64-sha256-of-server-SPKI'], // empty ⇒ system trust (dev)
 );
@@ -76,7 +76,7 @@ openssl x509 -in server.crt -pubkey -noout \
 | Member | Signature | Notes |
 |---|---|---|
 | `Signap.load(...)` | `Future<Signap>` | Named args: `apiKey`, `endpoint?`, `region`, `timeoutMs`, `pinnedSpkiHashes`. Validates `apiKey` (≥ 8 chars). |
-| `wise.identify(...)` | `Future<IdentifyResult>` | Named args: `linkedId?`, `tag?`, `extra?`. Collects signals natively + resolves the visitor. |
+| `signap.identify(...)` | `Future<IdentifyResult>` | Named args: `linkedId?`, `tag?`, `extra?`. Collects signals natively + resolves the visitor. |
 
 `IdentifyResult`: `{ requestId, ingestedAt, region, visitorId, confidence, identifiedAt }`
 

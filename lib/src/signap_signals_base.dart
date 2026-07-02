@@ -12,8 +12,8 @@ import 'types.dart';
 /// guaranteed (one source of truth: sdks/derived-id-golden-vectors.json).
 ///
 /// ```dart
-/// final wise = await Signap.load(apiKey: 'pk_live_…');
-/// final result = await wise.identify(linkedId: userId);
+/// final signap = await Signap.load(apiKey: 'pk_live_…');
+/// final result = await signap.identify(linkedId: userId);
 /// debugPrint('${result.visitorId} ${result.confidence}');
 /// ```
 class Signap {
