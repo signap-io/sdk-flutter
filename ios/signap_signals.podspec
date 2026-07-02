@@ -17,12 +17,12 @@ Pod::Spec.new do |s|
 
   s.dependency "Flutter"
 
-  # Native SDK dependency. The iOS SDK (sdks/ios) is currently Swift Package
-  # Manager–only and NOT yet published to a public registry (brand-gated — handoff
-  # M6/M7). Until a CocoaPods coordinate exists, add the `Signap` Swift
-  # Package to the host app (Xcode → Package Dependencies); it links into the same
-  # binary so `import Signap` in SignapPlugin.swift resolves. Once
-  # M6 publishes a pod, uncomment + pin the real coordinate (brand name bakes in):
+  # Native SDK dependency. The iOS SDK (sdks/ios) is published to Swift Package
+  # Manager ONLY (github.com/signap-io/sdk-ios @ 0.1.0, M7 2026-07-02) — there is
+  # NO CocoaPods podspec/coordinate for it. Add the `Signap` Swift Package to the
+  # host app (Xcode → Package Dependencies); it links into the same binary so
+  # `import Signap` in SignapPlugin.swift resolves. If a CocoaPods coordinate for
+  # the native SDK is ever published, uncomment + pin it here:
   #
   #   s.dependency "Signap", "~> 0.1"
 
