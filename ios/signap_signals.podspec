@@ -11,20 +11,21 @@ Pod::Spec.new do |s|
   s.license      = { :type => "Apache-2.0", :file => "LICENSE" }
   s.author           = { "Signap Technology" => "support@signap.io" }
   s.source           = { :path => "." }
-  s.source_files     = "Classes/**/*"
+  # Source moved under the SPM package dir (signap_signals/Sources/…) for the dual
+  # pod+SPM layout; the podspec points at the same files for CocoaPods consumers.
+  s.source_files     = "signap_signals/Sources/signap_signals/**/*.swift"
   s.platform         = :ios, "14.0"
   s.swift_version    = "5.9"
 
   s.dependency "Flutter"
 
-  # Native SDK dependency. The iOS SDK (sdks/ios) is published to Swift Package
-  # Manager ONLY (github.com/signap-io/sdk-ios @ 0.1.0, M7 2026-07-02) — there is
-  # NO CocoaPods podspec/coordinate for it. Add the `Signap` Swift Package to the
-  # host app (Xcode → Package Dependencies); it links into the same binary so
-  # `import Signap` in SignapPlugin.swift resolves. If a CocoaPods coordinate for
-  # the native SDK is ever published, uncomment + pin it here:
-  #
-  #   s.dependency "Signap", "~> 0.1"
+  # Native SDK dependency (CocoaPods path). The native iOS SDK ships to SPM
+  # (github.com/signap-io/sdk-ios @ 0.1.0) AND, for CocoaPods consumers, as the pod
+  # `SignapSDK` (Dev-7 publishes it — coordinate is `SignapSDK` to avoid colliding
+  # with the RN bridge pod named `Signap`, but its module_name stays `Signap` so
+  # `import Signap` in SignapPlugin.swift is unchanged). SPM consumers get the same
+  # module via Package.swift. See ios-spm-publish.md §6.5.
+  s.dependency "SignapSDK", "0.1.0"
 
   s.pod_target_xcconfig = { "DEFINES_MODULE" => "YES" }
 end
