@@ -7,6 +7,11 @@ import io.signap.sdk.IdentifyOptions
 import io.signap.sdk.SignapConfiguration
 import io.signap.sdk.SignapException
 import io.signap.sdk.Signap
+// Public factory `fun Signap(context, config)` — lives in the .collector package,
+// distinct from the io.signap.sdk.Signap class above. Both names coexist (Kotlin
+// resolves the classifier vs the callable separately); this is what binds the
+// `Signap(ctx, configuration)` call below to the 2-arg factory.
+import io.signap.sdk.collector.Signap
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel

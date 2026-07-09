@@ -48,10 +48,8 @@ android {
 }
 
 dependencies {
-    // Native SDK (sdks/android). NOT yet on Maven Central (brand-gated — handoff
-    // M6/M7), so the real coordinate is provisional. Until it ships, wire it via a
-    // Gradle composite build for in-repo dev; once published (M6) depend on the
-    // real coordinate here (the brand name bakes into it). The plugin compiles
-    // once this resolves:
-    //   implementation "io.signap.sdk:signals:0.1.0"
+    // Native SDK (sdks/android), live on Maven Central since 2026-07-02. The bridge
+    // binds to the public factory `io.signap.sdk.collector.Signap(context, config)`
+    // (see SignapPlugin.kt import); `mavenCentral()` is already in the plugin repos.
+    implementation "io.signap.sdk:signals:0.1.0"
 }
