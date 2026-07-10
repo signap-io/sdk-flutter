@@ -1,0 +1,75 @@
+# Publish signap_signals to pub.dev — keyless OIDC (no token, no GCP).
+#
+# WHERE THIS RUNS: this file lives under sdks/flutter/ in the wise-fingerprint monorepo, but it is
+# authored to run in the EXTRACTED public repo github.com/signap-io/sdk-flutter. Jenkins mirrors
+# sdks/flutter/ → signap-io/sdk-flutter via `git subtree split` (mirrorFlutterSdk.groovy), so this
+# path lands at the sdk-flutter repo root as `.github/workflows/publish.yml`. It does NOT run in the
+# monorepo (the monorepo has no GitHub Actions; publishing lives with the extracted SDK repo).
+#
+# AUTH: pub.dev automated publishing is OIDC-only (dart.dev/tools/pub/automated-publishing) — there
+# is NO long-lived token and NO Google Cloud. GitHub Actions is a trusted OIDC issuer for pub.dev:
+# with `id-token: write`, the runner mints a short-lived GitHub-signed OIDC token that pub.dev
+# verifies against the "Automated publishing from GitHub Actions" config on the signap_signals
+# package (repository = signap-io/sdk-flutter, tag pattern = v{{version}}). Nothing is stored.
+#
+# TRIGGER: a tag push `v<semver>` (Jenkins pushes it after mirroring, only when pubspec.yaml's
+# version bumped — a published pub.dev version is immutable, so the tag is the release signal).
+#
+# GATES: the authoritative gates (flutter analyze/test · Android-native example build · iOS
+# native-build proof) run in Jenkins BEFORE the mirror+tag, so a tag only exists if they passed.
+# This workflow re-runs the two CHEAP, Linux-safe checks (analyze + iOS-proof verify) as a
+# defense-in-depth guard against mirror drift, then publishes. The heavy Android-native build is
+# NOT repeated here (it ran pre-merge in Jenkins on every changeset).
+name: Publish to pub.dev
+
+on:
+  push:
+    tags:
+      # v{{version}} — matches the pub.dev automated-publishing tag pattern. Semver, optional
+      # pre-release/build suffix. Keep in sync with the pub.dev package config + Jenkins tag.
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
+
+# Least privilege: id-token to mint the OIDC token, read to checkout. No write to contents.
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest # Linux — Flutter/Dart publish needs no macOS (that is the iOS build, done on a Mac at release prep and attested by the committed proof)
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          # Pin to the same Flutter the flutter-builder agent uses (npm-pubdev-publish.md §C2).
+          flutter-version: '3.24.0'
+          channel: stable
+
+      - name: Resolve + analyze (Linux drift guard)
+        run: |
+          flutter pub get
+          flutter analyze
+
+      # iOS native-build proof gate — DEFENSE-IN-DEPTH re-verify (the canonical gate ran in Jenkins
+      # before the tag). Self-contained inline check (no dependency on the monorepo's
+      # infra/scripts/ios-native-build-proof.sh, which does NOT travel with the subtree mirror): the
+      # proof JSON is committed under sdks/flutter/ so it mirrors to the repo root here. `gen` (the
+      # part that needs a Mac + Xcode) already ran at release prep; this only verifies the artifact.
+      - name: iOS native-build proof gate (verify)
+        run: |
+          set -eu
+          proof="ios-native-build-proof.json"
+          tag="${GITHUB_REF_NAME#v}"                       # strip the leading v → semver
+          test -f "$proof" || { echo "::error::missing $proof — run ios-native-build-proof.sh gen on a Mac and commit it"; exit 1; }
+          # crude but dependency-free field reads (the file is a small flat JSON the gen step writes)
+          pv=$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$proof" | head -n1)
+          res=$(sed -n 's/.*"result"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$proof" | head -n1)
+          [ "$pv" = "$tag" ]   || { echo "::error::iOS proof version '$pv' != tag '$tag' (stale proof — rebuild on a Mac)"; exit 1; }
+          [ "$res" = "success" ] || { echo "::error::iOS proof result='$res' (not success)"; exit 1; }
+          echo "iOS native-build proof OK: version=$pv result=$res"
+
+      - name: Publish to pub.dev (OIDC — keyless)
+        # --force skips the interactive confirm; the OIDC token is provided by the id-token
+        # permission above and consumed by pub automatically. No token is written to disk.
+        run: flutter pub publish --force
