@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "sdk-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/signap-io/sdk-ios",
+      "state" : {
+        "revision" : "a1f1bd8c97855e60896f94aaddb281c2f4ff5b37",
+        "version" : "0.1.0"
+      }
+    }
+  ],
+  "version" : 2
+}

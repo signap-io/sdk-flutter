@@ -1,0 +1,13 @@
+{
+  "sdk": "signap_signals",
+  "package_dir": "sdks/flutter",
+  "version": "0.1.0",
+  "result": "success",
+  "native_ios_coordinate": "github.com/signap-io/sdk-ios",
+  "native_ios_version": "0.1.0",
+  "build_command": "flutter build ios --no-codesign (sdks/flutter/example)",
+  "xcode_version": "26.6",
+  "git_sha": "759b21d8d41a277e9132f489f36023bcb218fad3",
+  "built_by": "noxnox",
+  "built_at_utc": "2026-07-14T17:09:38Z"
+}
