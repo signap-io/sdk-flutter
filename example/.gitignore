@@ -43,3 +43,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# publish_to: none example — the lock is regenerated fresh in CI, not committed
+# (removed in #1531; it had pinned Dart >=3.12.2 and broke the pinned CI agent).
+pubspec.lock
