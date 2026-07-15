@@ -18,8 +18,12 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # of the product and file versions while build-number is used as the build suffix.
 version: 1.0.0+1
 
+# Match the plugin's own floor (../pubspec.yaml: sdk ">=3.0.0 <4.0.0") rather than
+# the Dart the release Mac happened to run — the CI mirror agent builds this example
+# too. A tight ^3.12.2 (Dart from Flutter 3.44.5+) excludes the pinned flutter-builder
+# agent (Flutter 3.24 / Dart 3.5) and broke `flutter pub get` in CI.
 environment:
-  sdk: ^3.12.2
+  sdk: ">=3.0.0 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -46,7 +50,9 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^6.0.0
+  # ^5.0.0 (Dart ^3.5.0), not ^6.0.0 (Dart ^3.8.0) — 6.x would re-fail `pub get` on
+  # the flutter-builder agent's Dart 3.5. Lints are dev-only; the 5.x set is fine.
+  flutter_lints: ^5.0.0
   integration_test:
     sdk: flutter
 
