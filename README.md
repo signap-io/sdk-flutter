@@ -26,8 +26,11 @@ Why bridge instead of re-implementing in Dart:
 ```yaml
 # pubspec.yaml
 dependencies:
-  signap_signals: ^0.1.0
+  signap_signals: ^0.1.1
 ```
+
+> 0.1.1 is the first build whose iOS/Android sides actually compile against the
+> native SDKs (0.1.0's bridge never built in CI — fixed in M-1/M-2). Use ≥ 0.1.1.
 
 ## Usage
 
