@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = "signap_signals"
-  s.version          = "0.1.0"
+  s.version          = "0.1.1"
   s.summary          = "Signap — Flutter SDK (iOS bridge)."
   s.description      = "Thin Flutter bridge over the native Signap iOS SDK."
   s.homepage         = "https://signap.io"

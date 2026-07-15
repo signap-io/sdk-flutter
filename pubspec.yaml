@@ -2,7 +2,7 @@ name: signap_signals
 description: >-
   Signap — Flutter SDK for visitor identification and cross-platform
   stitching. A thin bridge over the native iOS/Android SDKs.
-version: 0.1.0
+version: 0.1.1
 homepage: https://signap.io
 repository: https://github.com/signap-io/sdk-flutter
 # NOTE: publishing to pub.dev is a Dev-7 release step (mirror the native M7 flow).
