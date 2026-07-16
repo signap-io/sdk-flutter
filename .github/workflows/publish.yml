@@ -46,6 +46,15 @@ jobs:
           flutter-version: '3.24.0'
           channel: stable
 
+      # Mints + configures the pub.dev OIDC token from this run's `id-token` (per
+      # dart.dev/tools/pub/automated-publishing: "the temporary OIDC token is created and
+      # configured by the dart-lang/setup-dart action"). subosito/flutter-action sets up the
+      # Flutter SDK but does NOT do this exchange — without it `flutter pub publish` finds no
+      # credential and falls back to interactive OAuth ("Pub needs your authorization…"), which
+      # hangs forever in CI. The credential lands in the shared pub cache, so the flutter-bundled
+      # `flutter pub publish` below picks it up.
+      - uses: dart-lang/setup-dart@v1
+
       - name: Resolve + analyze (Linux drift guard)
         run: |
           flutter pub get
