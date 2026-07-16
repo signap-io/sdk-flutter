@@ -5,6 +5,7 @@ description: >-
 version: 0.1.1
 homepage: https://signap.io
 repository: https://github.com/signap-io/sdk-flutter
+issue_tracker: https://github.com/signap-io/sdk-flutter/issues
 # pub.dev discoverability — valid topic format (lowercase, <=32 chars, <=5 topics).
 topics: [identity, fingerprinting, analytics, security]
 # NOTE: publishing to pub.dev is a Dev-7 release step (mirror the native M7 flow).
